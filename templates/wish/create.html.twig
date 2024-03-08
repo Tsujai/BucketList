@@ -1,0 +1,125 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ isEditMode ? 'Modifier' : 'Créer' }} un souhait{% endblock %}
+
+{% block body %}
+
+    <h1>{{ isEditMode ? 'Modification' : 'Création' }}</h1>
+
+    <div class="form-create">
+        {% if isEditMode %}
+            <a class="return" href="{{ path('app_wish_detail', {'id': wish.id}) }}">↪ <span>Retour</span></a>
+        {% else %}
+            <a class="return" href="{{ path('app_wish_list') }}">↪ <span>Retour</span></a>
+        {% endif %}
+        {{ form_start(form) }}
+            <div>
+                {{ form_label(form.title) }}
+                {{ form_widget(form.title) }}
+            </div>
+            <span class="form-errors">{{ form_errors(form.title) }}</span>
+            <div>
+                {{ form_label(form.category) }}
+                {{ form_widget(form.category) }}
+            </div>
+            <div>
+                {{ form_label(form.description) }}
+                {{ form_widget(form.description) }}
+            </div>
+            <div>
+                {{ form_label(form.picture) }}
+                {{ form_widget(form.picture) }}
+            </div>
+
+            <img hidden="hidden" id="show-picture" src="{{ asset(path ~ wish.picture) }}" alt="" width="100%">
+
+        {% if isEditMode %}
+            <div>
+                {{ form_label(form.isDeleted) }}
+                {{ form_widget(form.isDeleted) }}
+            </div>
+        {% else %}
+            <div hidden="hidden">
+                {{ form_label(form.isDeleted) }}
+                {{ form_widget(form.isDeleted) }}
+            </div>
+        {% endif %}
+
+            <div>
+                {{ form_label(form.auteur) }}
+                {{ form_widget(form.auteur) }}
+            </div>
+            <span class="form-errors">{{ form_errors(form.auteur) }}</span>
+
+            <div>
+                {{ form_label(form.icon) }}
+                {{ form_widget(form.icon) }}
+            </div>
+            <span class="form-errors">{{ form_errors(form.icon) }}</span>
+
+            <div class="help-icon">
+                <i>Pour ouvrir un menu d'émoticone</i>
+                <img src="{{ asset('img/windowsKey.PNG') }}" alt="">
+                <span> + </span>
+                <img src="{{ asset('img/dotKey.PNG') }}" alt="">
+            </div>
+
+            <div>
+                {{ form_label(form.isPublished) }}
+                {{ form_widget(form.isPublished) }}
+            </div>
+
+        {{ form_end(form) }}
+    </div>
+
+    <script>
+        let checkbox = document.getElementById('create_wish_isDeleted');
+        let fileInput = document.getElementById('create_wish_picture');
+        let img = document.getElementById('show-picture');
+        let defaultImg = "{{ asset(path ~ wish.picture) }}";
+        let emptyPath = "/uploads/images/wish/"
+        let empty = false;
+
+        if (defaultImg === emptyPath){
+            empty = true;
+        }
+
+        if (!(img.getAttribute('src') === emptyPath)){
+            img.removeAttribute('hidden');
+        }
+
+        img.style.border = "#004c4c solid 2px";
+        img.style.marginTop = "0.5rem";
+
+        checkbox.addEventListener('change', function() {
+            if (checkbox.checked) {
+                fileInput.setAttribute('disabled', 'disabled');
+                img.setAttribute('hidden', 'hidden');
+            } else {
+                fileInput.removeAttribute('disabled');
+                img.removeAttribute('hidden');
+            }
+        });
+
+        fileInput.addEventListener('change', function () {
+            if (fileInput.files && fileInput.files[0]) {
+                let reader = new FileReader();
+                reader.onload = function(e) {
+                    img.src = e.target.result;
+                }
+                reader.readAsDataURL(fileInput.files[0]);
+                img.removeAttribute('hidden');
+                img.style.border = "#004c4c solid 2px";
+                img.style.marginTop = "0.5rem";
+            } else {
+                if(empty){
+                    img.setAttribute('hidden', 'hidden');
+                }
+                img.src = defaultImg;
+                img.style.border = "#004c4c solid 2px";
+                img.style.marginTop = "0.5rem";
+            }
+        });
+    </script>
+    
+{% endblock %}

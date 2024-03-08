@@ -10,27 +10,52 @@
         {% endblock %}
 
         {% block javascripts %}
-{% block importmap %}{{ importmap('app') }}{% endblock %}
+            {% block importmap %}
+                {{ importmap('app') }}
+            {% endblock %}
         {% endblock %}
     </head>
 
-    <header class="card">
-            <div class="card-header" id="header">
-                <img src="{{ asset('img/logo.png') }}" alt="">
-                <h1>Bucket-List</h1>
+    <body>
+        <header class="card">
+            <a id="head" href="{{ path('app_main') }}">
+                <div class="card-header" id="header">
+                    <img src="{{ asset('img/logo.png') }}" alt="">
+                    <h1>Bucket-List</h1>
+                </div>
+            </a>
 
-            </div>
             <nav class="navbar navbar-expand-lg bg-custom">
                 <ul class="nav">
                     <li class="nav-item"><a class="nav-link" href="{{ path('app_main') }}">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ path('app_about') }}">About us</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ path('app_wish') }}">Wishes</a></li>
+
+                    {% if is_granted('ROLE_USER') %}
+                        <li class="nav-item"><a class="nav-link" href="{{ path('app_wish_list') }}">Wishes</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ path('app_wish_create') }}">Create</a></li>
+                    {% endif %}
+
+                    {% if is_granted('IS_AUTHENTICATED') %}
+                        <li class="nav-item"><a class="nav-link" href="{{ path('app_profile', {'id': app.user.id}) }}">Profile</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ path('app_logout') }}">Logout</a></li>
+                    {% else %}
+                        <li class="nav-item"><a class="nav-link" href="{{ path('app_login') }}">Login</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ path('app_register') }}">Sign In</a></li>
+                    {% endif %}
                 </ul>
             </nav>
-    </header>
+        </header>
 
-    <body>
-        {% block body %}{% endblock %}
+        <div id="div-body">
+            {% for label, messages in app.flashes %}
+                {% for message in messages %}
+                    <div id="confirm" class="alert-base alert alert-{{ label }}"> {{ message }} </div>
+                {% endfor %}
+            {% endfor %}
+
+            {% block body %}{% endblock %}
+        </div>
+
+        <footer>© Bucket-List - {{ "now"|date("Y") }}</footer>
     </body>
-    <footer>© Bucket-List - {{ "now"|date("Y") }}</footer>
 </html>

@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription{% endblock %}
+
+{% block body %}
+    <h1>Inscription</h1>
+    <div class="form-create">
+
+        {{ form_start(form) }}
+
+        <div>
+            {{ form_label(form.email) }}
+            {{ form_widget(form.email) }}
+        </div>
+        <span class="form-errors">{{ form_errors(form.email) }}</span>
+
+        <div>
+            {{ form_label(form.pseudo) }}
+            {{ form_widget(form.pseudo) }}
+        </div>
+        <span class="form-errors">{{ form_errors(form.pseudo) }}</span>
+
+        <div>
+            {{ form_label(form.plainPassword.first) }}
+            {{ form_widget(form.plainPassword.first) }}
+        </div>
+
+        <div>
+            {{ form_label(form.plainPassword.second) }}
+            {{ form_widget(form.plainPassword.second) }}
+        </div>
+        <span class="form-errors">{{ form_errors(form.plainPassword.first) }}</span>
+
+        <div id="checkbox">
+            {{ form_label(form.agreeTerms) }}
+            {{ form_widget(form.agreeTerms) }}
+        </div>
+        <span class="form-errors">{{ form_errors(form.agreeTerms) }}</span>
+
+        {{ form_end(form) }}
+
+    </div>
+{% endblock %}

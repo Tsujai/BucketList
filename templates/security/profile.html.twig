@@ -1,0 +1,182 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Profile{% endblock %}
+
+{% block body %}
+
+    <h1>Profile</h1>
+
+    {% if isEditMode %}
+        <div class="form-profile">
+            {{ form_start(form) }}
+
+            <div>
+                {{ form_label(form.email) }}
+                {{ form_widget(form.email) }}
+            </div>
+            <i>Email non modifiable</i><br>
+
+            <div>
+                {{ form_label(form.pseudo) }}
+                {{ form_widget(form.pseudo) }}
+            </div>
+            <span class="form-errors">{{ form_errors(form.pseudo) }}</span>
+
+            <div>
+                {{ form_label(form.mdpCheckbox) }}
+                {{ form_widget(form.mdpCheckbox) }}
+            </div>
+
+            <div>
+                {{ form_label(form.oldPassword) }}
+                {{ form_widget(form.oldPassword) }}
+            </div>
+            <span class="form-errors">{{ form_errors(form.oldPassword) }}</span>
+
+            <div class="new-password-fields" id="divFirst">
+                {{ form_label(form.newPassword.first) }}
+                {{ form_widget(form.newPassword.first) }}
+            </div>
+
+            <div class="new-password-fields" id="divSecond">
+                {{ form_label(form.newPassword.second) }}
+                {{ form_widget(form.newPassword.second) }}
+            </div>
+            <span id="errorFirst" class="form-errors">{{ form_errors(form.newPassword.first) }}</span>
+            <span id="errorSecond" class="form-errors">{{ form_errors(form.newPassword.second) }}</span>
+
+            <div class="buttons">
+                <div>
+                    <a class="button-a back-button" type="button" href="{{ path('app_profile',{'id': user.id}) }}">Retour</a>
+                </div>
+
+                <div>
+                    {{ form_widget(form.submit) }}
+                </div>
+            </div>
+
+            {{ form_end(form) }}
+        </div>
+    {% else %}
+        <div class="form-create">
+            <div>
+                <label class="string-detail" for="inputEmail">Email : </label>
+                <input type="email" value="{{ user.email }}" name="email" id="inputEmail" disabled>
+            </div>
+
+            <div>
+                <label class="string-detail" for="inputPseudo">Pseudo : </label>
+                <input type="text" value="{{ user.pseudo }}" name="pseudo" id="inputPseudo" disabled>
+            </div>
+
+            <div>
+                <label class="string-detail" for="inputPassword">Mot de passe : </label>
+                <input type="password" value="random" name="password" id="inputPassword" disabled>
+            </div>
+
+            <div class="buttons">
+                <div>
+                    <a href="{{ path('app_profile_edit',{'id': user.id}) }}"><button class="modify-button">Modifier</button></a>
+                </div>
+            </div>
+
+            {% if userWishList != null %}
+                <h5>Liste de vos souhaits :</h5>
+                <div class="user-list">
+                    <table>
+                        <tbody>
+                        {% for wish in userWishList %}
+                            {% if wish.isPublished %}
+                                <tr onclick="window.location='{{ path('app_wish_detail', {'id': wish.id}) }}';">
+                                    <td>{{ wish.icon }}</td>
+                                    <td>{{ wish.title }}</td>
+                                    <td>{{ wish.category.name }}</td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+
+        </div>
+    {% endif %}
+
+    <script>
+        let divFirst = document.getElementById('divFirst');
+        let labelFirst = document.getElementById('label_first');
+        let inputFirst = document.getElementById('modif_password_newPassword_first');
+        let errorFirst = document.getElementById('errorFirst');
+
+        let labelSecond = document.getElementById('label_second');
+        let inputSecond = document.getElementById('modif_password_newPassword_second');
+        let divSecond = document.getElementById('divSecond');
+        let errorSecond = document.getElementById('errorSecond');
+
+        if (document.getElementById('modif_password_mdpCheckbox').checked){
+            displayFlex();
+        }else{
+            displayNone();
+        }
+
+        document.addEventListener("change", function(){
+            if (document.getElementById('modif_password_mdpCheckbox').checked){
+                displayFlex();
+            }else{
+                displayNone();
+            }
+        })
+
+        function displayFlex(){
+            labelFirst.style.display = 'flex';
+            labelFirst.removeAttribute('disabled');
+            inputFirst.style.display = 'flex';
+            inputFirst.removeAttribute('disabled');
+            inputFirst.setAttribute('data-validation-exclude', 'false');
+
+            labelSecond.style.display = 'flex';
+            labelSecond.removeAttribute('disabled');
+            inputSecond.style.display = 'flex';
+            inputSecond.removeAttribute('disabled');
+
+            errorFirst.style.display = 'flex';
+            errorSecond.style.display = 'flex';
+
+            divFirst.style.display = 'flex';
+            divSecond.style.display = 'flex';
+        }
+
+        function displayNone(){
+            labelFirst.style.display = 'none';
+            labelFirst.setAttribute('disabled','disabled');
+            inputFirst.style.display = 'none';
+            inputFirst.removeAttribute('disabled');
+            inputFirst.setAttribute('data-validation-exclude', 'true');
+
+            labelSecond.style.display = 'none';
+            labelSecond.setAttribute('disabled','disabled');
+            inputSecond.style.display = 'none';
+            inputSecond.removeAttribute('disabled');
+
+            errorFirst.style.display = 'none';
+            errorSecond.style.display = 'none';
+
+            divFirst.style.display = 'none';
+            divSecond.style.display = 'none';
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            var rows = document.querySelectorAll("table tbody tr");
+            rows.forEach(function(row) {
+                row.addEventListener("click", function() {
+                    var link = this.querySelector("a");
+                    if (link) {
+                        window.location.href = link.href;
+                    }
+                });
+            });
+        });
+
+    </script>
+
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Email envoyé{% endblock %}
+
+{% block body %}
+    <h1>Confirmation envoi mail</h1>
+    <div class="form-create">
+        <p>
+            Si un compte existe avec votre email, un mail sera envoyé contenant un lien que vous pouvez utiliser
+            pour réinitialiser votre mot de passe.<br>
+            Ce lien va expirer dans {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.
+        </p>
+        <p>Si vous ne recevez pas le mail, vérifiez dans vos spams ou <a href="{{ path('app_forgot_password_request') }}">Essayer à nouveau</a>.</p>
+    </div>
+{% endblock %}

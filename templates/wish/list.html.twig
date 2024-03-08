@@ -1,16 +1,39 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Wishes{% endblock %}
+{% block title %}Souhaits{% endblock %}
 
 {% block body %}
     <h1>Wishlist</h1>
 
-    <ul>
-        <li>Saut en parachute</li>
-        <li>Séjour à Las Vegas</li>
-        <li>Balade en hélicoptère</li>
-        <li>Voyage dans l'espace</li>
-        <li>Retraite spirituelle</li>
-    </ul>
+    <div class="list">
+        <table>
+            <tbody>
+                {% for wish in wishes %}
+                    {% if wish.isPublished %}
+                        <tr onclick="window.location='{{ path('app_wish_detail', {'id': wish.id}) }}';">
+                            <td>{{ wish.icon }}</td>
+                            <td>{{ wish.title }}</td>
+                            <td>{{ wish.category.name }}</td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var rows = document.querySelectorAll("table tbody tr");
+            rows.forEach(function(row) {
+                row.addEventListener("click", function() {
+                    var link = this.querySelector("a");
+                    if (link) {
+                        window.location.href = link.href;
+                    }
+                });
+            });
+        });
+    </script>
 
 {% endblock %}
+

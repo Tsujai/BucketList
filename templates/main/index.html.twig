@@ -1,7 +1,14 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Home{% endblock %}
+{% block title %}Accueil{% endblock %}
 
 {% block body %}
-    <h1>Home</h1>
+    <h1>Bienvenue sur le site Bucket-List</h1>
+    <p id="home"><i>La liste de choses à faire avant de mourrir</i><br>🏕 🚀 🚁 💎 ✈ 🏖 🏝</p>
+
+    <div id="img">
+        <a href="{{ path('app_wish_list') }}"><div><img src="{{ asset('img/bigLogo.png') }}"></div></a>
+    </div>
+
+
 {% endblock %}
