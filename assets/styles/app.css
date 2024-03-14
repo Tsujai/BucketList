@@ -1,19 +1,23 @@
-html,body {
-    height: 100%;
+* {
     margin: 0;
     padding: 0;
+}
+
+html,body {
+    height: 100%;
     background-color: #b2d8d8;
     position: relative;
+    font-family: system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue","Noto Sans","Liberation Sans",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
 }
 
 body h1 {
     text-align: center;
     padding: 1rem;
-    margin: 0;
+    font-weight: 600;
 }
 
 #div-body {
-    padding-top: 144px;
+    padding-top: 86px;
     padding-bottom: 46px;
 }
 
@@ -26,39 +30,48 @@ body h1 {
     color: black;
 }
 
-#header {
+.card-header {
     display: flex;
     box-sizing: border-box;
+    background-color: transparent;
+    border-bottom: none;
+    height: 100%;
+    margin-left: 1rem;
 }
 
-#header h1 {
+.card-header h1 {
     margin: auto 0;
+    white-space: nowrap;
 }
 
-#header img {
+.card-header img {
     margin: auto 0;
 }
 
 .card {
-    background-color: #66b2b2;
-    border-radius: 0;
-    position: fixed;
-    width: 100%;
-}
+    position: fixed; /* Assurez-vous que le header a une position relative */
+    height: 86px; /* Hauteur normale du header */
+    z-index: 1; /* Assurez-vous que le header est au-dessus du menu hamburger */
 
-.nav-link {
-    color: black;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    border-radius: 0;
+    background-color: #66b2b2;
+    border-bottom: #004c4c solid 1.5px;
 }
 
 footer {
     text-align: center;
-    background-color: #66b2b2;
     width: 100%;
     font-weight: 600;
     position: fixed;
     height: 46px;
     bottom: 0;
     line-height: 46px;
+    background-color: #66b2b2;
+    border-top: #004c4c solid 1.5px;
 }
 
 .date {
@@ -68,6 +81,7 @@ footer {
 
 .string-detail {
     font-weight: 700;
+    padding: 0.5rem 0;
 }
 
 .string-detail span {
@@ -78,10 +92,10 @@ footer {
     text-align: center;
     font-size: 1em;
     font-style: italic;
-    padding: 0rem 1rem;
+    padding: 0 1rem;
 }
 
-#h6_about {
+#h3-about {
     text-align: center;
     padding-top: 1rem;
 }
@@ -96,7 +110,7 @@ footer {
 
 .list tr:hover, .user-list tr:hover {
     cursor: pointer;
-    border: black solid 2px;
+    outline: black solid 2px;
 }
 
 .list td {
@@ -143,11 +157,13 @@ footer {
     padding: 0.7rem;
     border: #004c4c solid 2px;
     margin-bottom: 5rem;
+    box-sizing: border-box;
 }
 
 .form-profile div:has(label + input) {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     padding: 0.5rem 0;
 }
 
@@ -157,27 +173,85 @@ footer {
     padding: 0.5rem 0;
 }
 
+.form-profile div:has(i) {
+    padding-bottom: 1rem;
+}
+
 .form-create div {
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+}
+
+.form-create div:has(button) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.5rem 0;
+}
+
+.form-create div:has(p) {
+    font-size: 1.3em;
+}
+
+.form-create h3 {
     padding: 0.5rem 0;
 }
 
 .form-create div input[type="text"],
 .form-profile div input[type="text"],
-.form-create div input[type="file"],
 .form-create div input[type="email"],
 .form-profile div input[type="email"],
 .form-create div input[type="password"],
 .form-profile div input[type="password"],
-.form-create div select,
 .form-create div textarea,
+.form-create div select,
 .repeat_password {
+    box-sizing: border-box;
     width: 70%;
-    border-radius: 5px;
-    border: black solid 1px;
-    padding-left: 0.2rem;
-    font-size: 0.8em;
+    border-radius: 15px;
+    border: rgba(0, 0, 0, 0.5) solid 1px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    padding: 0.5rem;
+    font-size: 1em;
+    font-family: system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue","Noto Sans","Liberation Sans",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+}
+
+.form-create div input[type="file"] {
+    box-sizing: border-box;
+    width: 70%;
+    border-radius: 15px;
+    border: rgba(0, 0, 0, 0.5) solid 1px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    padding-right: 0.5rem;
+    font-size: 1em;
+    font-family: system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue","Noto Sans","Liberation Sans",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+}
+
+.form-create div input[type="file"]::file-selector-button {
+    padding: 0.5rem;
+    width: 47%;
+    margin-right: 0.5rem;
+    border: none;
+    background-color: #66b2b2;
+}
+
+.form-create div input[type="file"]:hover::file-selector-button {
+    cursor: pointer;
+    /*box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);*/
+}
+
+.form-create div input[type="file"]:hover {
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+}
+
+.form-create div input:focus,
+.form-create div select:focus,
+.form-create div textarea:focus {
+    outline: none;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
 }
 
 .form-create div input[type="checkbox"],
@@ -199,8 +273,6 @@ footer {
 
 .form-create span ul {
     list-style: none;
-    padding: 0;
-    margin: 0;
 }
 
 .help-icon i {
@@ -222,27 +294,30 @@ footer {
 }
 
 .blue-button, .orange-button {
-    width: 100%;
-    padding: 0.5rem 0;
+    width: 50%;
+    padding: 1rem 0;
     border: black solid 2px;
-    border-radius: 5px;
+    border-radius: 20px;
+    font-size: 1em;
     font-weight: 700;
-    margin: 0.5rem 0;
 }
 
 .blue-button:hover {
     color: #006666;
     border-color: #006666;
+    cursor: pointer;
 }
 
 .orange-button:hover {
     color: orange;
     border-color: orange;
+    cursor: pointer;
 }
 
 .buttons {
     display: flex;
     justify-content: center;
+    padding: 0.5rem 0;
 }
 
 .buttons div {
@@ -252,10 +327,11 @@ footer {
 }
 
 .buttons div button , .button-a {
-    padding: 0.5rem 1rem;
+    padding: 1rem 1.5rem;
     border: black solid 2px;
-    border-radius: 5px;
+    border-radius: 20px;
     font-weight: 700;
+    font-size: 1em;
 }
 
 .button-a {
@@ -271,34 +347,37 @@ footer {
 .back-button:hover {
     color: #006666;
     border-color: #006666;
+    cursor: pointer;
 }
 
 .modify-button:hover {
     color: orange;
     border-color: orange;
+    cursor: pointer;
 }
 
 .delete-button:hover {
     color: red;
     border-color: red;
+    cursor: pointer;
 }
 
 .form-errors ul {
-    padding: 0;
-    margin: 0;
     list-style: none;
-    font-size: 0.8em;
     color: red;
+    font-weight: 600;
+}
+
+.forget-password {
     font-weight: 600;
 }
 
 .return, .forget-password {
     text-decoration: none;
     color: black;
-    font-weight: 600;
 }
 
-.return:hover span, .forget-password:hover {
+.return:hover strong, .forget-password:hover {
     text-decoration: black underline 1.5px;
 }
 
@@ -308,33 +387,53 @@ footer {
     margin-top: 0.5rem;
 }
 
-.alert {
-    justify-content: inherit;
-    color: black;
+.string-detail:has(span + a) {
+    display: flex;
+}
+
+#span-auteur {
+    padding: 0 0.3rem;
+}
+
+.string-detail a:has(img) {
+    display: flex;
+}
+
+.string-detail a img {
+    height: 21px;
+    border: none;
     margin: 0;
 }
 
 .alert-base {
-    margin: 0.5rem;
+    padding: 1rem;
 }
 
-.alert-sucess {
+.alert-success {
     background-color: rgba(0, 128, 0, 0.29);
-    border-color: green;
+    border-top: green solid 1px;
+    border-bottom: green solid 1px;
+    color: darkgreen;
+    font-weight: 600;
 }
 
 .alert-warning {
-    background-color: rgba(255, 165, 0, 0.58);
-    border-color: orange;
+    background-color: rgba(255, 165, 0, 0.42);
+    border-top: #ff6200 solid 1px;
+    border-bottom: #ff6200 solid 1px;
+    color: #ff6200;
+    font-weight: 600;
 }
 
 .alert-danger {
     background-color: rgba(255, 0, 0, 0.42);
-    border-color: red;
+    border-top: red solid 1px;
+    border-bottom: red solid 1px;
+    color: darkred;
+    font-weight: 600;
 }
 
-
-
+/* ----- CSS pour checkbox ----- */
 .switch {
     position: relative;
     height: 1.5rem;
@@ -368,14 +467,128 @@ footer {
 }
 
 .switch:hover::before {
-    box-shadow: 0 0 0px 8px rgba(0, 0, 0, .15)
+    box-shadow: 0 0 0 8px rgba(0, 0, 0, .15)
 }
 
 .switch:checked:hover::before {
-    box-shadow: 0 0 0px 8px rgba(236, 72, 153, .15)
+    box-shadow: 0 0 0 8px rgba(236, 72, 153, .15)
 }
 
 .switch:checked:before {
     transform: translateX(100%);
     border-color: #008080;
 }
+
+/* ----- CSS pour menu hamburger ----- */
+.navbar {
+    position: absolute;
+    top: 0;
+    right: 20px;
+    z-index: 2;
+
+    background-color: #66b2b2;
+    margin: auto 0;
+    height: 100%;
+    display: flex;
+    flex-direction: row-reverse;
+    flex-wrap: nowrap;
+    align-items: center;
+}
+
+.navbar-toggle {
+    display: block;
+    cursor: pointer;
+    padding: 0 20px;
+}
+
+.bar {
+    width: 25px;
+    height: 3px;
+    background-color: black;
+    margin: 5px 0;
+    transition: 0.4s;
+}
+
+.navbar-menu {
+    list-style-type: none;
+    margin: auto;
+    display: none;
+    flex-direction: row;
+}
+
+.navbar-menu li {
+    display: block;
+}
+
+.navbar-menu li:last-child {
+    margin-right: 0;
+}
+
+.navbar-menu a {
+    color: black;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.navbar-toggle.active .bar:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+}
+
+.navbar-toggle.active .bar:nth-child(2) {
+    opacity: 0;
+}
+
+.navbar-toggle.active .bar:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+}
+
+.navbar-toggle.active ~ .navbar-menu {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    flex-direction: row;
+}
+
+.navbar-toggle.active ~ .navbar-menu li a {
+    padding: 0.5rem 0.8rem;
+}
+
+.navbar-toggle.active ~ .navbar-menu li a:hover {
+    border-bottom: black 2px solid;
+    border-top: black 2px solid;
+}
+
+@media screen and (max-width: 789px) {
+    .navbar-menu {
+        flex-direction: column;
+        background-color: #66b2b2;
+        border: #004c4c solid 1.5px;
+        padding: 1rem 2rem;
+    }
+
+    .navbar-toggle.active ~ .navbar-menu li {
+        padding: 0.5rem 0;
+    }
+
+    .navbar-toggle.active ~ .navbar-menu li a {
+        padding: 0.5rem 0.8rem;
+    }
+
+    .navbar-toggle.active ~ .navbar-menu {
+        flex-direction: column;
+    }
+}
+
+@media screen and (min-width: 790px) and (max-width: 1024px) {
+    .navbar-menu {
+        flex-wrap: nowrap;
+    }
+
+    .navbar-toggle.active ~ .navbar-menu {
+        flex-wrap: nowrap;
+    }
+}
+
+
+

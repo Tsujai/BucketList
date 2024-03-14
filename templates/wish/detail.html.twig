@@ -6,18 +6,33 @@
     <h1>Détails d'un souhait</h1>
 
     <div class="detail">
-        <a class="return" href="{{ path('app_wish_list') }}">↪ <span>Retour</span></a>
+        <div class="string-detail">
+            {% if profile != null %}
+                <a class="return" href="{{ path('app_profile', {'id': wish.auteur.id}) }}">↪ <strong>Retour</strong></a>
+            {% else %}
+                <a class="return" href="{{ path('app_wish_list') }}">↪ <strong>Retour</strong></a>
+            {% endif %}
+        </div>
+
         <div class="string-detail">Titre : <span>{{ wish.icon }} {{ wish.title }}</span></div>
         <div class="string-detail">Catégorie : <span>{{ wish.category.name }}</span></div>
         <div class="string-detail">Description : <span>{{ wish.description }}</span></div>
+
         {% if wish.picture != null %}
-            <div class="string-detail">Image :<img src="{{ asset(picturePath ~ wish.picture) }}"></div>
+            <div class="string-detail">Image :<img src="{{ asset(picturePath ~ wish.picture) }}" alt=""></div>
         {% endif %}
-        <div class="string-detail">Auteur : <span>{{ wish.auteur.pseudo }}</span></div>
+
+        <div class="string-detail">Auteur : <span id="span-auteur">{{ wish.auteur.pseudo|capitalize }}</span>
+            {% if app.user != null %}
+                <a href="{{ path('app_profile', {'id': wish.auteur.id}) }}"><img title="Consulter le profil de l'auteur" src="{{ asset('img/oeil.png') }}" alt=""></a>
+            {% endif %}
+        </div>
+
         <div class="string-detail">Créé le :<span class="date"> {{ wish.dateCreated|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY HH:mm") }}</span></div>
         {% if wish.dateUpdated != null %}
             <div class="string-detail">Modifié le :<span class="date"> {{ wish.dateUpdated|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY HH:mm") }}</span></div>
         {% endif %}
+
         <div class="string-detail">Souhait publié ? :
             <span>
                 {% if wish.isPublished %}
@@ -27,14 +42,15 @@
                 {% endif %}
             </span>
         </div>
+
         <div class="buttons">
-            {% if app.user.pseudo == wish.auteur.pseudo or is_granted('ROLE_ADMIN') %}
-                <div><a type="button" href="{{ path('app_wish_modify', {'id': wish.id}) }}"><button class="modify-button">Modifier</button></a></div>
+            {% if app.user == wish.auteur or is_granted('ROLE_ADMIN') %}
+                <div><a type="button" href="{{ path('app_wish_modify', {'id': wish.id, 'profile': profile}) }}"><button class="modify-button">Modifier</button></a></div>
             {% endif %}
             {% if is_granted('ROLE_ADMIN') %}
-                <div><a type="button" href="{{ path('app_wish_delete', {'id': wish.id}) }}"><button class="delete-button">Supprimer</button></a></div>
+                <div><a type="button" href="{{ path('app_wish_delete', {'id': wish.id, 'profile': profile}) }}"><button class="delete-button">Supprimer</button></a></div>
             {% endif %}
-             </div>
+        </div>
 
     </div>
 

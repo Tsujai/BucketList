@@ -15,41 +15,54 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class RegistrationController extends AbstractController
 {
     #[Route('/profile', name: 'app_profile', requirements: ['id'=>'\d+'])]
     public function profile(UserRepository $userRepository, Request $request, WishRepository $wishRepository): Response
     {
-        $isEditMode = false;
-        $userConnected = $userRepository->find($request->get('id'));
+        if (!$this->isGranted('IS_AUTHENTICATED')){
+            $this->addFlash('danger','Vous devez être connecté pour accéder à cette page');
+            return $this->redirectToRoute('app_login');
+        }
 
-        $userWishList = $wishRepository->findBy(['auteur'=>$userConnected->getId()]);
+        $isEditMode = false;
+        $user = $userRepository->find($request->get('id'));
+
+        $userWishList = $wishRepository->findBy(['auteur'=>$user->getId()]);
 
         return $this->render('security/profile.html.twig', [
-            'user' => $userConnected,
+            'user' => $user,
             'isEditMode' => $isEditMode,
             'userWishList' => $userWishList
         ]);
     }
 
-
     #[Route('/register', name: 'app_register')]
     #[Route('/profile/edit', name: 'app_profile_edit', requirements: ['id'=>'\d+'])]
-    public function edit(WishRepository $wishRepository, UserRepository $userRepository, Sender $sender, Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
+    public function edit(UserRepository $userRepository, Sender $sender, Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
     {
         $isEditMode = $request->get('id');
 
         if ($isEditMode){
             $user = $userRepository->find($request->get('id'));
+
+            if (!$this->isGranted('IS_AUTHENTICATED')){
+                $this->addFlash('danger','Vous devez être connecté pour faire cette action');
+                return $this->redirectToRoute('app_login');
+            }
+            if ($this->getUser()->getUserIdentifier() != $user->getEmail()){
+                $this->addFlash('danger', 'Accès interdit ! TRUAND !!!');
+                return $this->redirectToRoute('app_main');
+            }
+
             $form = $this->createForm(ModifPasswordType::class, $user);
             $form->handleRequest($request);
 
             if ($form->isSubmitted() && $form->isValid()){
                 if ($userPasswordHasher->isPasswordValid($user,$form->get('oldPassword')->getData())){
                     if ($form->get('pseudo')->getData() != $user->getPseudo()){
-                        $entityManager->persist($user->setPseudo($form->get('pseudo')->getData()));
+                        $entityManager->persist($user->setPseudo(ucfirst($form->get('pseudo')->getData())));
                     }
                     if ($form->get('newPassword')->getData() != null){
                         $newPasswordHashed = $userPasswordHasher->hashPassword($user, $form->get('newPassword')->getData());
@@ -63,7 +76,7 @@ class RegistrationController extends AbstractController
                         }
                     }
                     $entityManager->flush();
-                    $this->addFlash('sucess','Profil mis à jour');
+                    $this->addFlash('success','Profil mis à jour');
                     return $this->redirectToRoute('app_profile',['id' => $user->getId()]);
                 } else {
                     $form->get('oldPassword')->addError(new FormError('Le mot de passe actuel est incorrect'));
@@ -75,6 +88,11 @@ class RegistrationController extends AbstractController
                 'isEditMode' => $isEditMode
             ]);
         } else {
+            if ($this->isGranted('IS_AUTHENTICATED')){
+                $this->addFlash('danger','Action impossible. Vous êtes déjà connecté');
+                return $this->redirectToRoute('app_main');
+            }
+
             $user = new User();
             $form = $this->createForm(RegistrationFormType::class, $user);
             $form->handleRequest($request);

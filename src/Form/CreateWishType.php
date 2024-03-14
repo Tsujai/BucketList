@@ -47,6 +47,7 @@ class CreateWishType extends AbstractType
             ])
 
             ->add('auteur', TextType::class,[
+                'mapped'=>false,
                 'label'=>'Auteur : ',
                 'label_attr'=>[
                     'class'=>'string-detail',
@@ -73,7 +74,7 @@ class CreateWishType extends AbstractType
             ->add('submit', SubmitType::class,[
                 'label'=>'Enregistrer',
                 'attr'=>[
-                    'class'=>'blue-button'
+                    'class'=>'blue-button',
                 ]
             ])
 

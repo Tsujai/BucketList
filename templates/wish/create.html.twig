@@ -7,11 +7,18 @@
     <h1>{{ isEditMode ? 'Modification' : 'Création' }}</h1>
 
     <div class="form-create">
-        {% if isEditMode %}
-            <a class="return" href="{{ path('app_wish_detail', {'id': wish.id}) }}">↪ <span>Retour</span></a>
-        {% else %}
-            <a class="return" href="{{ path('app_wish_list') }}">↪ <span>Retour</span></a>
-        {% endif %}
+        <div>
+            {% if isEditMode %}
+                {% if profile %}
+                    <a class="return" href="{{ path('app_wish_detail', {'id': wish.id, 'profile': profile}) }}">↪ <strong>Retour</strong></a>
+                {% else %}
+                    <a class="return" href="{{ path('app_wish_detail', {'id': wish.id}) }}">↪ <strong>Retour</strong></a>
+                {% endif %}
+            {% else %}
+                <a class="return" href="{{ path('app_wish_list') }}">↪ <strong>Retour</strong></a>
+            {% endif %}
+        </div>
+
         {{ form_start(form) }}
             <div>
                 {{ form_label(form.title) }}
@@ -33,17 +40,17 @@
 
             <img hidden="hidden" id="show-picture" src="{{ asset(path ~ wish.picture) }}" alt="" width="100%">
 
-        {% if isEditMode %}
-            <div>
-                {{ form_label(form.isDeleted) }}
-                {{ form_widget(form.isDeleted) }}
-            </div>
-        {% else %}
-            <div hidden="hidden">
-                {{ form_label(form.isDeleted) }}
-                {{ form_widget(form.isDeleted) }}
-            </div>
-        {% endif %}
+            {% if isEditMode %}
+                <div>
+                    {{ form_label(form.isDeleted) }}
+                    {{ form_widget(form.isDeleted) }}
+                </div>
+            {% else %}
+                <div style="display: none">
+                    {{ form_label(form.isDeleted) }}
+                    {{ form_widget(form.isDeleted) }}
+                </div>
+            {% endif %}
 
             <div>
                 {{ form_label(form.auteur) }}

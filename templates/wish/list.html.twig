@@ -10,7 +10,7 @@
             <tbody>
                 {% for wish in wishes %}
                     {% if wish.isPublished %}
-                        <tr onclick="window.location='{{ path('app_wish_detail', {'id': wish.id}) }}';">
+                        <tr onclick="window.location='{{ path('app_wish_detail', {'id': wish.id}) }}'">
                             <td>{{ wish.icon }}</td>
                             <td>{{ wish.title }}</td>
                             <td>{{ wish.category.name }}</td>

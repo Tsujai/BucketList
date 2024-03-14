@@ -17,46 +17,35 @@ class ChangePasswordFormType extends AbstractType
         $builder
             ->add('plainPassword', RepeatedType::class, [
                 'type' => PasswordType::class,
-                'options' => [
-                    'attr' => [
-                        'autocomplete' => 'new-password',
-                    ],
-                ],
-                'first_options' => [
-                    'constraints' => [
-                        new NotBlank([
-                            'message' => 'Please enter a password',
-                        ]),
-                        new Length([
-                            'min' => 4,
-                            'minMessage' => 'Your password should be at least {{ limit }} characters',
-                            // max length allowed by Symfony for security reasons
-                            'max' => 4096,
-                        ]),
-                    ],
-                    'label' => 'Nouveau : ',
-                    'label_attr'=>[
-                      'class'=>'string-detail',
-                    ],
+                'mapped'=>false,
+                'first_options'=>[
+                    'label'=> 'Nouveau : ',
                     'attr'=>[
-                        'class'=>'repeat_password',
-                        'placeholder'=>'Renseigner un nouveau mot de passe'
-                    ]
-                ],
-                'second_options' => [
-                    'label' => 'Confirmer : ',
+                        'placeholder'=>'Ecrire un autre mot de passe',
+                    ],
                     'label_attr'=>[
                         'class'=>'string-detail',
                     ],
-                    'attr'=>[
-                        'class'=>'repeat_password',
-                        'placeholder'=>'Confirmer le nouveau mot de passe'
-                    ]
+                    'constraints'=>[
+                        new NotBlank([
+                            'message'=>'Entrer un nouveau mot de passe',
+                        ]),
+                        new Length([
+                            'min'=>4,
+                            'minMessage'=>'Le mot de passe doit contenir au moins {{ limit }} caractères'
+                        ]),
+                    ],
                 ],
-                'invalid_message' => 'The password fields must match.',
-                // Instead of being set onto the object directly,
-                // this is read and encoded in the controller
-                'mapped' => false,
+                'second_options'=>[
+                    'label'=>'Confirmer : ',
+                    'attr'=>[
+                        'placeholder'=>'Confirmer le mot de passe',
+                    ],
+                    'label_attr'=>[
+                        'class'=>'string-detail',
+                    ],
+                ],
+                'invalid_message'=>'Les mots de passe doivent correspondre',
             ])
         ;
     }

@@ -1,10 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Profile{% endblock %}
+{% block title %}Mon profil{% endblock %}
 
 {% block body %}
-
-    <h1>Profile</h1>
+    {% if app.user != user %}
+        <h1>Profil de {{ user.pseudo|capitalize }}</h1>
+    {% else %}
+        <h1>Mon profil</h1>
+    {% endif %}
 
     {% if isEditMode %}
         <div class="form-profile">
@@ -14,7 +17,8 @@
                 {{ form_label(form.email) }}
                 {{ form_widget(form.email) }}
             </div>
-            <i>Email non modifiable</i><br>
+            <div><i>Email non modifiable</i></div>
+
 
             <div>
                 {{ form_label(form.pseudo) }}
@@ -69,30 +73,31 @@
                 <input type="text" value="{{ user.pseudo }}" name="pseudo" id="inputPseudo" disabled>
             </div>
 
-            <div>
-                <label class="string-detail" for="inputPassword">Mot de passe : </label>
-                <input type="password" value="random" name="password" id="inputPassword" disabled>
-            </div>
-
-            <div class="buttons">
-                <div>
-                    <a href="{{ path('app_profile_edit',{'id': user.id}) }}"><button class="modify-button">Modifier</button></a>
+            {% if user.id == app.user.id %}
+                <div class="buttons">
+                    <div>
+                        <a href="{{ path('app_profile_edit',{'id': user.id}) }}"><button class="modify-button">Modifier</button></a>
+                    </div>
                 </div>
-            </div>
+            {% endif %}
 
             {% if userWishList != null %}
-                <h5>Liste de vos souhaits :</h5>
+
+                {% if user.id == app.user.id %}
+                    <h3>Liste de mes souhaits :</h3>
+                {% else %}
+                    <h3>Liste de ses souhaits :</h3>
+                {% endif %}
+                
                 <div class="user-list">
                     <table>
                         <tbody>
                         {% for wish in userWishList %}
-                            {% if wish.isPublished %}
-                                <tr onclick="window.location='{{ path('app_wish_detail', {'id': wish.id}) }}';">
-                                    <td>{{ wish.icon }}</td>
-                                    <td>{{ wish.title }}</td>
-                                    <td>{{ wish.category.name }}</td>
-                                </tr>
-                            {% endif %}
+                            <tr onclick="window.location='{{ path('app_wish_detail', {'id': wish.id, 'profile': true}) }}';">
+                                <td>{{ wish.icon }}</td>
+                                <td>{{ wish.title }}</td>
+                                <td>{{ wish.category.name }}</td>
+                            </tr>
                         {% endfor %}
                         </tbody>
                     </table>

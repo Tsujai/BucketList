@@ -2,10 +2,8 @@
 
 namespace App\Controller;
 
-use App\Entity\Category;
 use App\Entity\Wish;
 use App\Form\CreateWishType;
-use App\Repository\CategoryRepository;
 use App\Repository\UserRepository;
 use App\Repository\WishRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -14,12 +12,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
 
 #[Route('/wish',name: 'app_wish')]
-#[IsGranted('ROLE_USER')]
 class WishController extends AbstractController
 {
     #[Route('/list', name: '_list')]
@@ -32,24 +28,35 @@ class WishController extends AbstractController
     }
 
     #[Route('/detail/{id}', name: '_detail', requirements: ['id'=>'\d+'])]
-    public function details(int $id, WishRepository $wishRepository): Response
+    public function details(int $id, WishRepository $wishRepository, Request $request): Response
     {
+        $profile = $request->get('profile');
         $wish = $wishRepository->find($id);
         return $this->render('wish/detail.html.twig', [
             'wish' => $wish,
-            'picturePath'=> $this->getParameter('picture_path'),
+            'picturePath' => $this->getParameter('picture_path'),
+            'profile' => $profile,
         ]);
     }
 
     #[Route('/create', name: '_create')]
     #[Route('/modify/{id}', name: '_modify', requirements: ['id'=>'\d+'])]
-    #[IsGranted('ROLE_USER')]
     public function create(?Wish $wish, Request $request, EntityManagerInterface $em, SluggerInterface $slugger, UserRepository $userRepository): Response
     {
+        if (!$this->isGranted('IS_AUTHENTICATED')){
+            $this->addFlash('danger','Vous devez être connecté pour accéder à cette page');
+            return $this->redirectToRoute('app_login');
+        }
+
+        $profile = $request->get('profile');
         $isEditMode = $wish ? true : false;
+
         if (!$isEditMode){
             $wish = new Wish();
             $wish->setAuteur($userRepository->findOneBy(['email' => $this->getUser()->getUserIdentifier()]));
+        } elseif (($this->getUser() != $wish->getAuteur()) && (!$this->isGranted('ROLE_ADMIN'))){
+            $this->addFlash('danger', 'Accès interdit ! TRUAND !!!');
+            return $this->redirectToRoute('app_wish_list');
         }
 
         $form = $this->createForm(CreateWishType::class, $wish, ['pseudo' => $userRepository->findOneBy(['email' => $this->getUser()->getUserIdentifier()])->getPseudo()]);
@@ -57,6 +64,7 @@ class WishController extends AbstractController
         $path = $this->getParameter('picture_path');
 
         if ($form->isSubmitted() && $form->isValid()){
+            $wish->setAuteur($userRepository->findOneBy(['pseudo' => $form->get('auteur')->getData()]));
             if (!$isEditMode){
                 if ($form->get('picture')->getData() instanceof UploadedFile){
                     $picture = $form->get('picture')->getData();
@@ -89,7 +97,7 @@ class WishController extends AbstractController
                 $em->flush();
 
                 $this->addFlash('success','Votre souhait a été modifié');
-                return $this->redirectToRoute('app_wish_detail',['id'=>$wish->getId()]);
+                return $this->redirectToRoute('app_wish_detail',['id' => $wish->getId(), 'profile' => $profile]);
             }
 
         }
@@ -98,18 +106,30 @@ class WishController extends AbstractController
             'isEditMode'=>$isEditMode,
             'wish'=>$wish,
             'path'=>$path,
+            'profile'=>$profile,
         ]);
     }
 
     #[Route('/detail/delete/{id}', name: '_delete', requirements: ['id'=>'\d+'])]
-    #[IsGranted('ROLE_ADMIN')]
-    public function delete(int $id, WishRepository $wishRepository, EntityManagerInterface $em): Response
+    public function delete(int $id, WishRepository $wishRepository, EntityManagerInterface $em, Request $request, UserRepository $userRepository): Response
     {
+        if (!$this->isGranted('ROLE_ADMIN')){
+            $this->addFlash('danger','Vous n\'êtes pas autorisé à faire cette action');
+            return $this->redirectToRoute('app_wish_detail', ['id'=>$id]);
+        }
+
+        $profile = $request->get('profile');
+        $user = $userRepository->findOneBy(['email' => $this->getUser()->getUserIdentifier()]);
         $wish = $wishRepository->find($id);
         $em->remove($wish);
         $em->flush();
 
         $this->addFlash('success','Votre souhait a été supprimé');
-        return $this->redirectToRoute('app_wish_list');
+        if ($profile){
+            return $this->redirectToRoute('app_profile',['id' => $user->getId()]);
+        }else{
+            return $this->redirectToRoute('app_wish_list');
+        }
+
     }
 }
