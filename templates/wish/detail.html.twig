@@ -28,9 +28,9 @@
             {% endif %}
         </div>
 
-        <div class="string-detail">Créé le :<span class="date"> {{ wish.dateCreated|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY HH:mm") }}</span></div>
+        <div class="string-detail">Créé le :<span class="date"> {{ wish.dateCreated|format_datetime(timezone="Europe/Paris",locale='fr',pattern="EEEE dd MMMM YYYY HH:mm") }}</span></div>
         {% if wish.dateUpdated != null %}
-            <div class="string-detail">Modifié le :<span class="date"> {{ wish.dateUpdated|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY HH:mm") }}</span></div>
+            <div class="string-detail">Modifié le :<span class="date"> {{ wish.dateUpdated|format_datetime(timezone="Europe/Paris",locale='fr',pattern="EEEE dd MMMM YYYY HH:mm") }}</span></div>
         {% endif %}
 
         <div class="string-detail">Souhait publié ? :

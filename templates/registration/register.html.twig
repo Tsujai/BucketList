@@ -21,17 +21,18 @@
         <span class="form-errors">{{ form_errors(form.pseudo) }}</span>
 
         <div>
-            {{ form_label(form.plainPassword.first) }}
-            {{ form_widget(form.plainPassword.first) }}
+            {{ form_label(form.password.first) }}
+            {{ form_widget(form.password.first) }}
         </div>
 
         <div>
-            {{ form_label(form.plainPassword.second) }}
-            {{ form_widget(form.plainPassword.second) }}
+            {{ form_label(form.password.second) }}
+            {{ form_widget(form.password.second) }}
         </div>
-        <span class="form-errors">{{ form_errors(form.plainPassword.first) }}</span>
+        <span class="form-errors">{{ form_errors(form.password.first) }}</span>
+        <span class="form-errors">{{ form_errors(form.password.second) }}</span>
 
-        <div id="checkbox">
+        <div>
             {{ form_label(form.agreeTerms) }}
             {{ form_widget(form.agreeTerms) }}
         </div>

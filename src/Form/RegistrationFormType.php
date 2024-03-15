@@ -49,6 +49,9 @@ class RegistrationFormType extends AbstractType
                 'label_attr'=>[
                     'class'=>'string-detail',
                 ],
+                'attr'=>[
+                    'class'=>'switch',
+                ],
                 'constraints' => [
                     new IsTrue([
                         'message' => 'Vous devez accepter les termes',
@@ -56,7 +59,7 @@ class RegistrationFormType extends AbstractType
                 ],
             ])
 
-            ->add('plainPassword', RepeatedType::class, [
+            ->add('password', RepeatedType::class, [
 //                'required'=>false,
                 'type'=> PasswordType::class,
                 'label_attr'=>[
@@ -75,6 +78,15 @@ class RegistrationFormType extends AbstractType
                     'label_attr'=>[
                         'class'=>'string-detail',
                     ],
+                    'constraints'=>[
+                        new NotBlank([
+                            'message'=>'Entrer un nouveau mot de passe',
+                        ]),
+                        new Length([
+                            'min'=>4,
+                            'minMessage'=>'Le mot de passe doit contenir au moins {{ limit }} caractères'
+                        ]),
+                    ],
                 ],
                 'second_options'=>[
                     'label'=>'Confirmer : ',
@@ -86,7 +98,7 @@ class RegistrationFormType extends AbstractType
                     ],
                 ],
                 'invalid_message'=>'Les mots de passe doivent correspondre',
-                'mapped'=>false,
+//                'mapped'=>false,
             ])
 
             ->add('submit', SubmitType::class,[

@@ -97,12 +97,14 @@ class RegistrationController extends AbstractController
             $form = $this->createForm(RegistrationFormType::class, $user);
             $form->handleRequest($request);
 
+
+
             if ($form->isSubmitted() && $form->isValid()) {
                 // encode the plain password
                 $user->setPassword(
                     $userPasswordHasher->hashPassword(
                         $user,
-                        $form->get('plainPassword')->getData()
+                        $form->get('password')->getData()
                     )
                 );
 
@@ -111,7 +113,7 @@ class RegistrationController extends AbstractController
                 $entityManager->persist($user);
                 $entityManager->flush();
 
-                $sender->sendEmail('New user','Un nouvel utilisateur : '.$user->getEmail().' vient de s\'inscrire', 'admin@bucket-list.fr');
+                $sender->sendEmail('New user','Un nouvel utilisateur : '.$user->getPseudo().' vient de s\'inscrire', 'admin@bucket-list.fr');
 
                 $this->addFlash('sucess','Inscription réussie');
                 return $this->redirectToRoute('app_login');

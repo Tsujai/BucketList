@@ -71,6 +71,7 @@ class WishController extends AbstractController
                     $pictureName = $slugger->slug($wish->getTitle()).'-'.uniqid().'.'.$picture->guessExtension();
                     $picture->move($path, $pictureName);
                 }
+                $wish->setPicture($pictureName);
 
                 $em->persist($wish);
                 $em->flush();
